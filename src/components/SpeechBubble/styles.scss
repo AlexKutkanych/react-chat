@@ -1,0 +1,42 @@
+.speech-bubble {
+  background: #efefef;
+  border-radius: 25px;
+  font-size: 16px;
+  margin: 0 0 23px;
+  max-width: 400px;
+  padding: 10px 20px;
+  position: relative;
+
+  &::after {
+    border-left: 15px solid transparent;
+    border-top: 15px solid #efefef;
+    bottom: -15px;
+    content: "";
+    position: absolute;
+    right: 20px;
+  }
+
+  p {
+    margin: 0 0 10px;
+
+    &:last-of-type {
+      margin-bottom: 0;
+    }
+  }
+
+  &__time {
+    float: right;
+    font-size: 12px;
+    color: gray;
+  }
+
+  &__current-user {
+    margin-left: auto;
+    margin-right: 30px;
+    background-color: #fafafa;
+
+    &::after {
+      border-top-color: #fafafa;
+    }
+  }
+}

@@ -1,0 +1,19 @@
+.users-list {
+  &__status {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: gray;
+
+    &_green {
+      background-color: green;
+    }
+  }
+
+  &__name {
+    font-size: 25px;
+    color: #fff;
+    margin-left: 20px;
+  }
+}

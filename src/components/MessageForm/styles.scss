@@ -1,0 +1,10 @@
+.message-form {
+  display: flex;
+  padding: 20px;
+  margin: 10px;
+  border: 1px solid;
+
+  &__text-field {
+    flex-grow: 1;
+  }
+}

@@ -1,0 +1,25 @@
+.chat-screen {
+  display: flex;
+  height: calc(100vh - 64px);
+
+  &__left-panel {
+    width: 30%;
+    background-color: #4fc3f7;
+  }
+
+  &__right-panel {
+    position: relative;
+    width: 70%;
+  }
+
+  &__message-block {
+    width: calc(100% - 16px);
+    position: absolute;
+    bottom: 0;
+  }
+
+  &__typing-users {
+    padding: 0 20px;
+    margin: 0;
+  }
+}
