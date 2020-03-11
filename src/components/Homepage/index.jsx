@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import LoginPage from '../LoginPage';
-import ChatScreen from '../ChatScreen';
+import ChatStartPage from '../ChatStartPage';
 import TopNavbar from '../TopNavbar';
 
 
@@ -31,7 +31,8 @@ class Homepage extends Component {
       <div>
         <TopNavbar user={this.state.currentUser} />
         {this.state.currentUser ?
-          <ChatScreen user={this.state.currentUser}>Hello {this.state.currentUser}</ChatScreen> :
+          <ChatStartPage user={this.state.currentUser} /> :
+          // <ChatScreen user={this.state.currentUser}>Hello {this.state.currentUser}</ChatScreen> :
           <LoginPage handleUserSubmitted={this.handleUserSubmitted} />
         }
       </div>

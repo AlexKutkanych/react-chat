@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { ChatManager, TokenProvider } from '@pusher/chatkit-client';
 import MessageForm from '../MessageForm';
 import UsersList from '../UsersList';
 import ChatMessages from '../ChatMessages';
+import chatManager from '../../utils';
 import './styles.scss';
 
 class ChatScreen extends Component {
@@ -18,14 +18,6 @@ class ChatScreen extends Component {
   }
 
   componentDidMount(){
-    const chatManager = new ChatManager({
-      instanceLocator: 'v1:us1:d0ec4f24-daa6-409c-8f66-cec95c62b14a', 
-      userId: this.props.user,
-      tokenProvider: new TokenProvider({
-        url: 'http://localhost:3001/authenticate'
-      })
-    });
-
     chatManager
       .connect()
       .then(currentUser => {
@@ -112,6 +104,7 @@ const renderTypingUsers = (users) => {
     users.length > 1 ? <span><strong>{users.join(', ')}</strong> is typing...</span> :
     null;
 }
+
 
 export default ChatScreen;
 
