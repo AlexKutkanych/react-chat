@@ -1,16 +1,19 @@
-import React from 'react';
-import { useHistory } from 'react-router-dom';
+import React, {Component} from 'react';
+import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { setUser } from '../../actions';
 import UsernameForm from '../UsernameForm';
 
-const LoginPage = () => {
-  let history = useHistory();
+class LoginPage extends Component {
   
-  const handleUserSubmitted = (e, user) => {
+  handleUserSubmitted = (e, user) => {
     e.preventDefault();
 
     const body = JSON.stringify({
       name: user
     });
+
+    this.props.setUser(user);
 
     fetch('http://localhost:3001/user', {
       method: 'POST',
@@ -18,13 +21,27 @@ const LoginPage = () => {
       headers: {
         'Content-Type': 'application/json'
       }
-    }).then(() => history.push('/homepage'));
+    }).then(() => this.props.history.push('/homepage'));
   }
+  
 
-  return (
-    <UsernameForm handleUserSubmitted={handleUserSubmitted} />
-  )
+  render(){
+    return (
+      <UsernameForm handleUserSubmitted={this.handleUserSubmitted} />
+    )
+  }
 }
 
-export default LoginPage;
+const mapDispatchToProps = dispatch => ({
+  setUser: user => dispatch(setUser(user))
+})
+
+
+const mapStateToProps = (state) => {
+  return {
+    user: state.user
+  }
+}
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(LoginPage));
 
