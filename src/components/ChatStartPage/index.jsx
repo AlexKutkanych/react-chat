@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import chatManager from '../../utils';
 import RoomsList from '../RoomsList';
 
-class ChartStartPage extends Component {
+class ChatStartPage extends Component {
   constructor(props){
     super(props);
     this.state = {
@@ -50,5 +50,5 @@ class ChartStartPage extends Component {
   }
 }
 
-export default ChartStartPage;
+export default ChatStartPage;
 

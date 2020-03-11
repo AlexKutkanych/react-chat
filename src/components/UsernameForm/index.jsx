@@ -17,7 +17,7 @@ class UsernameForm extends Component {
   render(){
     return (
       <div className="login-form">
-        <form action="submit" onSubmit={() => this.props.handleUserSubmitted(this.state.name)}>
+        <form action="submit" onSubmit={(e) => this.props.handleUserSubmitted(e, this.state.name)}>
           <TextField className="login-form__text-field" required id="standard-required" placeholder="Please enter your name" onChange={this.handleChange} />
           <Button
             type="submit"
