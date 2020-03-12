@@ -54,7 +54,6 @@ class ChatScreen extends Component {
           console.error("error:", error);
         });
       });
-    
   }
 
   sendMessage = (e, msg) => {
@@ -87,7 +86,7 @@ class ChatScreen extends Component {
   render(){
     const { messages, usersWhoAreTyping } = this.state;
     const { user, currentRoom } = this.props;
-    console.log(this.props, 'props');
+
     return (
     <div className="chat-screen">
       <div className="chat-screen__left-panel">
@@ -117,11 +116,11 @@ const mapDispatchToProps = dispatch => ({
 })
 
 
-const mapStateToProps = (state) => {
+const mapStateToProps = ({ usersReducer: { user, userName }, roomsReducer: { currentRoom }}) => {
   return {
-    user: state.user,
-    userName: state.userName,
-    currentRoom: state.currentRoom
+    user: user,
+    userName: userName,
+    currentRoom: currentRoom
   }
 }
 

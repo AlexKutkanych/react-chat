@@ -1,0 +1,21 @@
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  &__input-block {
+    label {
+      margin-right: 10px;
+    }
+  }
+
+  &__error {
+    margin-bottom: 0;
+    color: red;
+  }
+
+  &__button-container {
+    padding-top: 20px;
+  }
+}

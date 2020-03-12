@@ -17,7 +17,7 @@ const useStyles = makeStyles({
   },
 });
 
-export default function RoomItem({ room, enterRoom }) {
+export default function RoomItem({ room, enterRoom, removeRoom }) {
   const classes = useStyles();
   const { name, created_by_id, member_user_ids, id } = room;
   return (
@@ -25,20 +25,21 @@ export default function RoomItem({ room, enterRoom }) {
       <CardActionArea>
         <CardMedia
           className={classes.media}
-          image="/static/images/cards/contemplative-reptile.jpg"
+          image="https://d26a57ydsghvgx.cloudfront.net/content/blog/BlogImage_Chat.jpg"
           title="Contemplative Reptile"
         />
         <CardContent>
           <Typography gutterBottom variant="h5" component="h2">{name}</Typography>
-          <Typography variant="body2" color="textSecondary" component="p"><strong>Created by:</strong>{created_by_id}</Typography>
+          <Typography variant="body2" color="textSecondary" component="p"><strong>Created by:</strong> {created_by_id}</Typography>
+          <Typography variant="body2" color="textSecondary" component="p"><strong>Members:</strong> {member_user_ids && member_user_ids.join(', ')}</Typography>
         </CardContent>
       </CardActionArea>
       <CardActions>
         <Button size="small" color="primary" onClick={() => enterRoom(id)}>
           Go to room
         </Button>
-        <Button size="small" color="primary">
-          Learn More
+        <Button size="small" color="primary" onClick={() => removeRoom(id)}>
+          Remove room
         </Button>
       </CardActions>
     </Card>

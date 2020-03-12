@@ -1,25 +1,18 @@
 import React, { Component } from 'react';
-import chatManager from '../../utils';
-import RoomsList from '../RoomsList';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { setUser, setCurrentRoom } from '../../actions';
+import uniqid from 'uniqid';
+import Divider from '@material-ui/core/Divider';
+import chatManager from '../../utils';
+import RoomsList from '../RoomsList';
+import { setUser, setCurrentRoom, setUsersRooms, createRoom, deleteRoom } from '../../actions';
+import './styles.scss';
 
 class ChatStartPage extends Component {
-  constructor(props){
-    super(props);
-    this.state = {
-      currentUser: {},
-      rooms: []
-    }
-  }
-
   componentDidMount(){
     chatManager(this.props.userName)
       .connect()
       .then(currentUser => {
-        this.setState({ currentUser });
-
         this.props.setUser(currentUser);
         this.fetchRooms(currentUser.id);
         console.log("Connected as user ", currentUser);
@@ -37,18 +30,48 @@ class ChatStartPage extends Component {
       }
     })
     .then(res => res.json())
-    .then(res => this.setState({ rooms: res })) 
+    .then(res => this.props.setUsersRooms(res));
   }
 
   enterRoom = (roomId) => {
     this.props.history.push(`/room/${roomId}`);
   }
+
+  createRoom = ({ name }) => {
+    this.props.user.createRoom({
+      id: uniqid(`${name}-`),
+      name,
+      private: false,
+    }).then(room => {
+      this.props.createRoom(room);
+    })
+    .catch(err => {
+      console.log(`Error creating room ${err}`)
+    })
+  }
+
+  removeRoom = id => {
+    this.props.user.deleteRoom({ roomId: id })
+      .then(() => {
+        console.log(`Deleted room with ID: ${id}`)
+        this.props.deleteRoom(id);
+      })
+      .catch(err => {
+        console.log(`Error deleted room ${id}: ${err}`)
+      })
+  }
   
   render(){
+    const { user, rooms } = this.props;
+    
     return (
-    <div className="chat-screen">
-      Hello, {this.state.currentUser.name}
-      <RoomsList rooms={this.state.rooms} enterRoom={this.enterRoom} />
+    <div className="chat-start-page">
+      <h2>Hello, {user && user.name}</h2>
+      <p>Here you can find some data</p>
+      <Divider />
+      <RoomsList rooms={rooms} enterRoom={this.enterRoom} createRoom={this.createRoom} removeRoom={this.removeRoom} />
+      <br />
+      <Divider />
     </div>
   );
   }
@@ -56,15 +79,19 @@ class ChatStartPage extends Component {
 
 const mapDispatchToProps = dispatch => ({
   setUser: user => dispatch(setUser(user)),
-  setCurrentRoom: currentRoom => dispatch(setCurrentRoom(currentRoom))
+  setCurrentRoom: currentRoom => dispatch(setCurrentRoom(currentRoom)),
+  setUsersRooms: rooms => dispatch(setUsersRooms(rooms)),
+  createRoom: newRoom => dispatch(createRoom(newRoom)),
+  deleteRoom: roomId => dispatch(deleteRoom(roomId))
 })
 
 
-const mapStateToProps = (state) => {
+const mapStateToProps = ({ usersReducer: { user, userName }, roomsReducer: { currentRoom, rooms }}) => {
   return {
-    user: state.user,
-    userName: state.userName,
-    currentRoom: state.currentRoom
+    user: user,
+    userName: userName,
+    currentRoom: currentRoom,
+    rooms: rooms
   }
 }
 

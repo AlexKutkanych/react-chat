@@ -37,10 +37,10 @@ class App extends Component {
   }
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = ({ usersReducer: { user, userName }}) => {
   return {
-    user: state.user,
-    userName: state.userName
+    user: user,
+    userName: userName
   }
 }
 
