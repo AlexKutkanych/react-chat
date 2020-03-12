@@ -1,7 +1,7 @@
 import React from 'react';
 import { AppBar, Toolbar, IconButton, Typography, InputBase }  from '@material-ui/core';
+import { Link } from 'react-router-dom';
 import { fade, makeStyles } from '@material-ui/core/styles';
-// import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
 import { AccountCircle } from '@material-ui/icons';
 
@@ -58,23 +58,15 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const TopNavbar = ({ user }) => {
+const TopNavbar = ({ user, userName }) => {
   const classes = useStyles();
 
   return (
     <div className={classes.root}>
       <AppBar position="static">
         <Toolbar>
-          {/* <IconButton
-            edge="start"
-            className={classes.menuButton}
-            color="inherit"
-            aria-label="open drawer"
-          >
-            <MenuIcon />
-          </IconButton> */}
           <Typography className={classes.title} variant="h6" noWrap>
-           GoChat
+            <Link to="/">GoChat</Link>
           </Typography>
           <div className={classes.search}>
             <div className={classes.searchIcon}>
@@ -89,7 +81,7 @@ const TopNavbar = ({ user }) => {
               inputProps={{ 'aria-label': 'search' }}
             />
           </div>
-          {user && (<IconButton
+          {userName && (<IconButton
                 aria-label="account of current user"
                 aria-controls="menu-appbar"
                 aria-haspopup="true"
@@ -98,10 +90,15 @@ const TopNavbar = ({ user }) => {
                 <AccountCircle />
             </IconButton>)
           }
+
+          <div style={{ padding: '0 20px' }}>
+            {userName ? <Link to="/">Logout</Link> : <Link to="/login">Login</Link>}
+          </div>
+          
         </Toolbar>
       </AppBar>
     </div>
   );
 };
 
-export default TopNavbar
+export default TopNavbar;

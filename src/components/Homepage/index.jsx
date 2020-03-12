@@ -1,26 +1,17 @@
-import React, { Component } from 'react';
-import LoginPage from '../LoginPage';
-import ChatStartPage from '../ChatStartPage';
+import React from 'react';
+import { Link } from 'react-router-dom';
+import './styles.scss';
 
-class Homepage extends Component {
-  constructor(props){
-    super(props);
-    this.state = {
-      currentUser: ''
-    }
-  }
-
-  render(){
-    return (
+const Homepage = () => {
+  return (
+    <div className='homepage-wrapper'>
       <div>
-        {this.state.currentUser ?
-          <ChatStartPage user={this.state.currentUser} /> :
-          // <ChatScreen user={this.state.currentUser}>Hello {this.state.currentUser}</ChatScreen> :
-          <LoginPage handleUserSubmitted={this.handleUserSubmitted} />
-        }
+        <img src="https://img.icons8.com/doodle/96/000000/hand-peace.png" alt='hand icon' />
+        <h1>Welcome to GoChat app!</h1>
+        <p>Please go to <Link to="/login">Login Page</Link> to start chatting!</p>
       </div>
-    );
-  }
+    </div>
+  );
 }
 
 export default Homepage;

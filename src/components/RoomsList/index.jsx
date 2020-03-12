@@ -1,14 +1,10 @@
 import React from 'react';
+import RoomItem from '../RoomItem';
 
 const RoomsList = ({ rooms, enterRoom }) => {
     return (
     <div className="chat-screen">
-     {rooms.map(item => (
-       <div>
-         <h2>{item.name}</h2>
-         <button onClick={enterRoom}>Enter group</button>
-       </div>
-     ))}
+     {rooms.map(room => <RoomItem room={room} enterRoom={enterRoom} /> )}
     </div>
   );
 }

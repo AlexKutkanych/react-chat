@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import chatManager from '../../utils';
 import RoomsList from '../RoomsList';
+import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { setUser, setCurrentRoom } from '../../actions';
 
 class ChatStartPage extends Component {
   constructor(props){
@@ -12,11 +15,12 @@ class ChatStartPage extends Component {
   }
 
   componentDidMount(){
-    chatManager(this.props.user)
+    chatManager(this.props.userName)
       .connect()
       .then(currentUser => {
         this.setState({ currentUser });
 
+        this.props.setUser(currentUser);
         this.fetchRooms(currentUser.id);
         console.log("Connected as user ", currentUser);
       })
@@ -36,8 +40,8 @@ class ChatStartPage extends Component {
     .then(res => this.setState({ rooms: res })) 
   }
 
-  enterRoom = () => {
-
+  enterRoom = (roomId) => {
+    this.props.history.push(`/room/${roomId}`);
   }
   
   render(){
@@ -50,5 +54,19 @@ class ChatStartPage extends Component {
   }
 }
 
-export default ChatStartPage;
+const mapDispatchToProps = dispatch => ({
+  setUser: user => dispatch(setUser(user)),
+  setCurrentRoom: currentRoom => dispatch(setCurrentRoom(currentRoom))
+})
+
+
+const mapStateToProps = (state) => {
+  return {
+    user: state.user,
+    userName: state.userName,
+    currentRoom: state.currentRoom
+  }
+}
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ChatStartPage));
 

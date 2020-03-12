@@ -1,6 +1,8 @@
 const initState = {
-  user: '',
-  rooms: []
+  userName: '',
+  user: {},
+  rooms: [],
+  currentRoom: {}
 }
 
 const rootReducer = (state = initState, action) => {
@@ -9,6 +11,16 @@ const rootReducer = (state = initState, action) => {
       return { 
         ...state,
         user: action.user
+      }
+    case 'SET_CURRENT_USER_NAME':
+      return { 
+        ...state,
+        userName: action.userName
+      }
+    case 'SET_CURRENT_ROOM':
+      return {
+        ...state,
+        currentRoom: action.currentRoom
       }
     case 'SET_CURRENT_USER_ROOMS':
       return {

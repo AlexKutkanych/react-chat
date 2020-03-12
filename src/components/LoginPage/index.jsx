@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { setUser } from '../../actions';
+import { setUserName } from '../../actions';
 import UsernameForm from '../UsernameForm';
 
 class LoginPage extends Component {
@@ -13,7 +13,7 @@ class LoginPage extends Component {
       name: user
     });
 
-    this.props.setUser(user);
+    this.props.setUserName(user);
 
     fetch('http://localhost:3001/user', {
       method: 'POST',
@@ -33,13 +33,13 @@ class LoginPage extends Component {
 }
 
 const mapDispatchToProps = dispatch => ({
-  setUser: user => dispatch(setUser(user))
+  setUserName: name => dispatch(setUserName(name))
 })
 
 
 const mapStateToProps = (state) => {
   return {
-    user: state.user
+    userName: state.userName
   }
 }
 
