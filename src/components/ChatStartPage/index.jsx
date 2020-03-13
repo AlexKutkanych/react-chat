@@ -5,7 +5,7 @@ import uniqid from 'uniqid';
 import Divider from '@material-ui/core/Divider';
 import chatManager from '../../utils';
 import RoomsList from '../RoomsList';
-import { setUser, setCurrentRoom, setUsersRooms, createRoom, deleteRoom } from '../../actions';
+import { setUser, setCurrentRoom, setUsersRooms, createRoom, deleteRoom, userLogout } from '../../actions';
 import './styles.scss';
 
 class ChatStartPage extends Component {
@@ -66,7 +66,7 @@ class ChatStartPage extends Component {
     
     return (
     <div className="chat-start-page">
-      <h2>Hello, {user && user.name}</h2>
+      <h2 onClick={this.disconnect}>Hello, {user && user.name}</h2>
       <p>Here you can find some data</p>
       <Divider />
       <RoomsList rooms={rooms} enterRoom={this.enterRoom} createRoom={this.createRoom} removeRoom={this.removeRoom} />
@@ -81,6 +81,7 @@ const mapDispatchToProps = dispatch => ({
   setUser: user => dispatch(setUser(user)),
   setCurrentRoom: currentRoom => dispatch(setCurrentRoom(currentRoom)),
   setUsersRooms: rooms => dispatch(setUsersRooms(rooms)),
+  userLogout: () => dispatch(userLogout()),
   createRoom: newRoom => dispatch(createRoom(newRoom)),
   deleteRoom: roomId => dispatch(deleteRoom(roomId))
 })

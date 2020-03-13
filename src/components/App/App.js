@@ -14,7 +14,7 @@ class App extends Component {
     return (
       <Router>
         <div className='app-container'>
-          <TopNavbar userName={userName} />
+          <TopNavbar />
           <div className='app-content-container'>
             <Switch>
               <Route exact path="/">

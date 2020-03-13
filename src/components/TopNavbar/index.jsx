@@ -1,6 +1,8 @@
 import React from 'react';
+import { withRouter, Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { userLogout } from '../../actions';
 import { AppBar, Toolbar, IconButton, Typography, InputBase }  from '@material-ui/core';
-import { Link } from 'react-router-dom';
 import { fade, makeStyles } from '@material-ui/core/styles';
 import SearchIcon from '@material-ui/icons/Search';
 import { AccountCircle } from '@material-ui/icons';
@@ -58,8 +60,15 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const TopNavbar = ({ user, userName }) => {
+const TopNavbar = ({ user, userName, userLogout, history }) => {
   const classes = useStyles();
+  
+  const logout = () => {
+    user.disconnect();
+    window.localStorage.clear();
+    history.push('/');
+    userLogout();
+  }
 
   return (
     <div className={classes.root}>
@@ -92,7 +101,7 @@ const TopNavbar = ({ user, userName }) => {
           }
 
           <div style={{ padding: '0 20px' }}>
-            {userName ? <Link to="/">Logout</Link> : <Link to="/login">Login</Link>}
+            {userName ? <Link to="/" onClick={logout}>Logout</Link> : <Link to="/login">Login</Link>}
           </div>
           
         </Toolbar>
@@ -101,4 +110,15 @@ const TopNavbar = ({ user, userName }) => {
   );
 };
 
-export default TopNavbar;
+const mapDispatchToProps = dispatch => ({
+  userLogout: () => dispatch(userLogout())
+});
+
+const mapStateToProps = ({ usersReducer: { user, userName }}) => {
+  return {
+    user: user,
+    userName: userName,
+  }
+}
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(TopNavbar));

@@ -3,6 +3,10 @@ export const setUser = user => ({
   user
 });
 
+export const userLogout = user => ({
+  type: 'USER_LOGOUT'
+});
+
 export const setUserName = name => ({
   type: 'SET_CURRENT_USER_NAME',
   userName: name
