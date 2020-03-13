@@ -3,7 +3,7 @@ export const setUser = user => ({
   user
 });
 
-export const userLogout = user => ({
+export const userLogout = () => ({
   type: 'USER_LOGOUT'
 });
 
@@ -30,4 +30,12 @@ export const createRoom = newRoom => ({
 export const deleteRoom = roomId => ({
   type: 'DELETE_ROOM',
   roomId
+});
+
+export const addRoomMessage = message => ({
+  type: 'ADD_ROOM_MESSAGE',
+  message
+});
+export const clearRoomMessage = () => ({
+  type: 'CLEAR_ROOM_MESSAGE'
 });

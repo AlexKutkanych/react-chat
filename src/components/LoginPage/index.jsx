@@ -1,19 +1,21 @@
-import React, {Component} from 'react';
-import { withRouter } from 'react-router-dom';
-import { connect } from 'react-redux';
+import React from 'react';
+import { useDispatch } from 'react-redux';
+import { useHistory } from 'react-router';
 import { setUserName } from '../../actions';
 import UsernameForm from '../UsernameForm';
 
-class LoginPage extends Component {
+const LoginPage = () => {
+  const dispatch = useDispatch();
+  let history = useHistory();
   
-  handleUserSubmitted = (e, user) => {
+  const handleUserSubmitted = (e, user) => {
     e.preventDefault();
 
     const body = JSON.stringify({
       name: user
     });
 
-    this.props.setUserName(user);
+    dispatch(setUserName(user));
 
     fetch('http://localhost:3001/user', {
       method: 'POST',
@@ -21,27 +23,13 @@ class LoginPage extends Component {
       headers: {
         'Content-Type': 'application/json'
       }
-    }).then(() => this.props.history.push('/homepage'));
+    }).then(() => history.push('/homepage'));
   }
   
-
-  render(){
-    return (
-      <UsernameForm handleUserSubmitted={this.handleUserSubmitted} />
-    )
-  }
+  return (
+    <UsernameForm handleUserSubmitted={handleUserSubmitted} />
+  )
 }
 
-const mapDispatchToProps = dispatch => ({
-  setUserName: name => dispatch(setUserName(name))
-})
-
-
-const mapStateToProps = (state) => {
-  return {
-    userName: state.userName
-  }
-}
-
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(LoginPage));
+export default LoginPage;
 

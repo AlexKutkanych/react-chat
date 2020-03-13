@@ -1,66 +1,57 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import MessageForm from '../MessageForm';
 import UsersList from '../UsersList';
 import ChatMessages from '../ChatMessages';
 import chatManager from '../../utils';
 
-import { withRouter } from 'react-router-dom';
-import { connect } from 'react-redux';
-import { setUser, setCurrentRoom } from '../../actions';
+import { useRouteMatch } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux';
+import { setUser, setCurrentRoom, addRoomMessage, clearRoomMessage } from '../../actions';
 import './styles.scss';
 
-class ChatScreen extends Component {
-  constructor(props){
-    super(props);
-    this.state = {
-      messages: [],
-      usersWhoAreTyping: []
-    }
-  }
+const ChatScreen = () => {
+  const user = useSelector(({ usersReducer: { user }}) => user);
+  const messages = useSelector(({ roomsReducer: { messages }}) => messages);
+  const currentRoom = useSelector(({ roomsReducer: { currentRoom }}) => currentRoom);
 
-  componentDidMount(){
-    const { match, user: { id }, setCurrentRoom, setUser } = this.props;
+  const [usersWhoAreTyping, setUsersWhoAreTyping] = useState([]);
 
-    chatManager(id)
-      .connect()
-      .then(currentUser => {
-        setUser(currentUser);
-        return currentUser.subscribeToRoomMultipart({
-          roomId: match.params.id,
-          hooks: {
-            onMessage: message => {
-              this.setState({ 
-                messages: [
-                  ...this.state.messages, message
-                ]
-                });
-            },
-            onUserJoined: user => console.log(`User ${user.name} joined`),
-            onUserStartedTyping: ({ name }) => {
-              this.setState({
-                usersWhoAreTyping: [...this.state.usersWhoAreTyping, name]
-              });
-            },
-            onUserStoppedTyping: ({ name }) => {
-              this.setState({
-                usersWhoAreTyping: this.state.usersWhoAreTyping.filter(userName => userName !== name)
-              })
-            },
+  const dispatch = useDispatch();
+  const match = useRouteMatch();
+
+  useEffect(() => {
+    chatManager(user.id)
+    .connect()
+    .then(currentUser => {
+      dispatch(setUser(currentUser));
+      return currentUser.subscribeToRoomMultipart({
+        roomId: match.params.id,
+        hooks: {
+          onMessage: message => {
+            dispatch(addRoomMessage(message));
+            console.log(message, 'meee')
           },
-          messageLimit: 100
-        })
-        .then(currentRoom => setCurrentRoom(currentRoom))
-        .catch(error => {
-          console.error("error:", error);
-        });
+          onUserJoined: user => console.log(`User ${user.name} joined`),
+          onUserStartedTyping: ({ name }) => setUsersWhoAreTyping(name),
+          onUserStoppedTyping: ({ name }) => setUsersWhoAreTyping(usersWhoAreTyping.filter(userName => userName !== name))
+        },
+        messageLimit: 100
+      })
+      .then(currentRoom => dispatch(setCurrentRoom(currentRoom)))
+      .catch(error => {
+        console.error("error:", error);
       });
-  }
+    });
 
-  sendMessage = (e, msg) => {
+    return () => dispatch(clearRoomMessage());
+  }, [])
+
+
+  const sendMessage = (e, msg) => {
     e.preventDefault();
 
-    this.props.user.sendSimpleMessage({
-      roomId: this.props.currentRoom.id,
+    user.sendSimpleMessage({
+      roomId: currentRoom.id,
       text: msg,
     })
     .then(messageId => {
@@ -71,9 +62,9 @@ class ChatScreen extends Component {
     })
   }
 
-  sendTypingEvent = () => {
-    this.props.user
-      .isTypingIn({ roomId: this.props.currentRoom.id })
+  const sendTypingEvent = () => {
+    user
+      .isTypingIn({ roomId: currentRoom.id })
       .then(() => {
         console.log('Success!')
       })
@@ -81,11 +72,12 @@ class ChatScreen extends Component {
         console.log(`Error sending typing indicator: ${err}`)
       });
   }
-  
 
-  render(){
-    const { messages, usersWhoAreTyping } = this.state;
-    const { user, currentRoom } = this.props;
+  const renderTypingUsers = (users) => {
+    return users.length === 1 ? <span><strong>{users[0]}</strong> is typing...</span> : 
+      users.length > 1 ? <span><strong>{users.join(', ')}</strong> is typing...</span> :
+      null;
+  }
 
     return (
     <div className="chat-screen">
@@ -93,37 +85,15 @@ class ChatScreen extends Component {
         {Object.keys(currentRoom).length && <UsersList users={currentRoom.userStore.users} />}
       </div>
       <div className="chat-screen__right-panel">
-        <ChatMessages messages={messages} currentUser={user.id} />
+        <ChatMessages messages={messages || []} currentUser={user.id} />
         <div className="chat-screen__message-block">
           <p className="chat-screen__typing-users">{renderTypingUsers(usersWhoAreTyping)}</p>
-          <MessageForm sendMessage={this.sendMessage} onChange={this.sendTypingEvent} />
+          <MessageForm sendMessage={sendMessage} onChange={sendTypingEvent} />
         </div>
       </div>
     </div>
   );
-  }
 }
 
-const renderTypingUsers = (users) => {
-  return users.length === 1 ? <span><strong>{users[0]}</strong> is typing...</span> : 
-    users.length > 1 ? <span><strong>{users.join(', ')}</strong> is typing...</span> :
-    null;
-}
-
-const mapDispatchToProps = dispatch => ({
-  setUser: user => dispatch(setUser(user)),
-  setCurrentRoom: currentRoom => dispatch(setCurrentRoom(currentRoom))
-})
-
-
-const mapStateToProps = ({ usersReducer: { user, userName }, roomsReducer: { currentRoom }}) => {
-  return {
-    user: user,
-    userName: userName,
-    currentRoom: currentRoom
-  }
-}
-
-
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ChatScreen));
+export default ChatScreen;
 

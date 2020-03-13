@@ -17,7 +17,7 @@ const useStyles = makeStyles({
   },
 });
 
-export default function RoomItem({ room, enterRoom, removeRoom }) {
+const RoomItem = ({ room, enterRoom, removeRoom }) => {
   const classes = useStyles();
   const { name, created_by_id, member_user_ids, id } = room;
   return (
@@ -45,3 +45,5 @@ export default function RoomItem({ room, enterRoom, removeRoom }) {
     </Card>
   );
 }
+
+export default RoomItem;

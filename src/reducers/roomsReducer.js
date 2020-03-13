@@ -1,6 +1,7 @@
 const initState = {
   currentRoom: {},
-  rooms: []
+  rooms: [],
+  messages: []
 }
 
 export default (state = initState, action) => {
@@ -14,6 +15,19 @@ export default (state = initState, action) => {
       return {
         ...state,
         currentRoom: action.currentRoom
+      }
+    case 'ADD_ROOM_MESSAGE':
+      return {
+        ...state,
+          messages: [
+            ...state.messages,
+            action.message
+          ]
+      }
+    case 'CLEAR_ROOM_MESSAGE':
+      return {
+        ...state,
+          messages: []
       }
     case 'CREATE_ROOM':
       return {
