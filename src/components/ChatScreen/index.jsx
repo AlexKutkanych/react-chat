@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { useBeforeunload } from 'react-beforeunload';
 import MessageForm from '../MessageForm';
 import UsersList from '../UsersList';
 import ChatMessages from '../ChatMessages';
+import Spinner from '../Spinner';
 import chatManager from '../../utils';
 
 import { useRouteMatch } from 'react-router-dom'
@@ -27,15 +29,12 @@ const ChatScreen = () => {
       return currentUser.subscribeToRoomMultipart({
         roomId: match.params.id,
         hooks: {
-          onMessage: message => {
-            dispatch(addRoomMessage(message));
-            console.log(message, 'meee')
-          },
+          onMessage: message => dispatch(addRoomMessage(message)),
           onUserJoined: user => console.log(`User ${user.name} joined`),
-          onUserStartedTyping: ({ name }) => setUsersWhoAreTyping(name),
+          onUserStartedTyping: ({ name }) => setUsersWhoAreTyping(oldUsers => [...oldUsers, name]),
           onUserStoppedTyping: ({ name }) => setUsersWhoAreTyping(usersWhoAreTyping.filter(userName => userName !== name))
         },
-        messageLimit: 100
+        messageLimit: 20
       })
       .then(currentRoom => dispatch(setCurrentRoom(currentRoom)))
       .catch(error => {
@@ -43,10 +42,11 @@ const ChatScreen = () => {
       });
     });
 
-    return () => dispatch(clearRoomMessage());
-  }, [])
+    return () => dispatch(clearRoomMessage())
+  }, [dispatch, match.params.id, user.id, usersWhoAreTyping]);
 
-
+  useBeforeunload(() => dispatch(clearRoomMessage()));
+  
   const sendMessage = (e, msg) => {
     e.preventDefault();
 
@@ -82,7 +82,8 @@ const ChatScreen = () => {
     return (
     <div className="chat-screen">
       <div className="chat-screen__left-panel">
-        {Object.keys(currentRoom).length && <UsersList users={currentRoom.userStore.users} />}
+        {Object.keys(currentRoom).length ? <UsersList users={currentRoom.userStore.users} /> :
+        <Spinner loading={true} />}
       </div>
       <div className="chat-screen__right-panel">
         <ChatMessages messages={messages || []} currentUser={user.id} />
