@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router';
 import uniqid from 'uniqid';
@@ -12,6 +12,7 @@ const ChatStartPage = () => {
   const user = useSelector(({ usersReducer: { user }}) => user);
   const userName = useSelector(({ usersReducer: { userName }}) => userName);
   const rooms = useSelector(({ roomsReducer: { rooms }}) => rooms);
+  const [isLoading, updateLoadingStatus] = useState(true)
 
   const dispatch = useDispatch();
   const history = useHistory();
@@ -24,7 +25,10 @@ const ChatStartPage = () => {
       }
     })
     .then(res => res.json())
-    .then(res => dispatch(setUsersRooms(res)));
+    .then(res => {
+      dispatch(setUsersRooms(res))
+      updateLoadingStatus(false);
+    });
   }
 
   useEffect(() => {
@@ -74,7 +78,9 @@ const ChatStartPage = () => {
     <h2>Hello, {user && user.name}</h2>
     <p>Here you can find some data</p>
     <Divider />
-    <RoomsList rooms={rooms} enterRoom={enterRoom} createRoom={handleCreateRoom} removeRoom={handleRemoveRoom} />
+    <RoomsList rooms={rooms} enterRoom={enterRoom} createRoom={handleCreateRoom} removeRoom={handleRemoveRoom}
+      isLoading={isLoading}
+    />
     <br />
     <Divider />
   </div>
